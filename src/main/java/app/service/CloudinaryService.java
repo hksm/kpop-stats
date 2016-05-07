@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import com.cloudinary.Cloudinary;
@@ -17,22 +18,33 @@ public class CloudinaryService {
 	private String cloudName;
 	private String apiKey;
 	private String apiSecret;
-
-	private Cloudinary cloudinary;
 	
-	public CloudinaryService() {
-		cloudinary = new Cloudinary(ObjectUtils.asMap(
+	public void upload(File file) throws IOException {
+		getCloudinary().uploader().upload(file, ObjectUtils.emptyMap());
+	}
+	
+	public void upload(File file, Map<String,Object> map) throws IOException {
+		getCloudinary().uploader().upload(file, map);
+	}
+	
+	@Bean
+	public Cloudinary getCloudinary() {
+		return new Cloudinary(ObjectUtils.asMap(
 			"cloud_name", cloudName,
 			"api_key", apiKey,
 			"api_secret", apiSecret)
 		);
 	}
-	
-	public void upload(File file) throws IOException {
-		cloudinary.uploader().upload(file, ObjectUtils.emptyMap());
+
+	public void setCloudName(String cloudName) {
+		this.cloudName = cloudName;
 	}
-	
-	public void upload(File file, Map<String,Object> map) throws IOException {
-		cloudinary.uploader().upload(file, map);
+
+	public void setApiKey(String apiKey) {
+		this.apiKey = apiKey;
+	}
+
+	public void setApiSecret(String apiSecret) {
+		this.apiSecret = apiSecret;
 	}
 }

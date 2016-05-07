@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>K-Pop Stats</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/select.css">
+	<link rel="stylesheet" href="css/custom.css">
+</head>
+
+<body ng-app="kpop-stats" class="ng-cloak">
+	<nav class="navbar navbar-default navbar-static-top">
+		<div ng-controller="navigation as nav" class="container">
+			<div class="navbar-header">
+	        	<button type="button" class="navbar-toggle" ng-click="navbarCollapse = !navbarCollapse" aria-expanded="true">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="#/">k-pop base</a>
+	        </div>
+	        
+	        <div id="navbar" class="navbar-collapse collapse" uib-collapse="navbarCollapse" aria-expanded="true">
+				<ul class="nav navbar-nav" bs-active-link>
+					<li class="active"><a href="#/">Home</a></li>
+					<li><a href="#/artist">Artist</a></li>
+					<li><a href="#/track">Track</a></li>
+					<li><a href="#/download">Downloads</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li ng-show="!authenticated"><a href="#/register">Register</a></li>
+					<li ng-show="!authenticated"><a href="#/login">Login</a></li>
+					<li ng-show="authenticated"><a href="" ng-click="nav.logout()">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div ng-view class="container"></div>
+	
+	<script type="text/javascript" src="js/jquery-2.2.1.js"></script>
+	<script type="text/javascript" src="js/angular.js"></script>
+	<script type="text/javascript" src="js/angular-route.js"></script>
+	<script type="text/javascript" src="js/select.js"></script>
+	<script type="text/javascript" src="js/select-tpls.js"></script>
+	<script type="text/javascript" src="js/ui-bootstrap-tpls-1.3.1.js"></script>
+	<script type="text/javascript" src="js/angular-bootstrap-file-field.min.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/directives.js"></script>
+	<script type="text/javascript" src="js/services.js"></script>
+	<script type="text/javascript" src="js/controllers.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,53 @@
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+	display: none !important;
+}
+
+.nav, .pagination, .carousel, .panel-title a {
+	cursor: pointer;
+}
+
+body {
+	min-height: 2000px;
+}
+
+.navbar-static-top {
+	margin-bottom: 19px;
+}
+
+oi-select .select-search {
+	border-color: #ccc;
+}
+
+.icons {
+	text-align: right;
+	max-width: 40px;
+}
+
+.icons span {
+	cursor: pointer;
+}
+
+.icons span:first-child {
+	margin-right: 5px;
+}
+
+.icons .glyphicon-edit {
+	color: #31708F;
+}
+
+.icons .glyphicon-edit:hover {
+	color: #00ABFF;
+}
+
+.icons .glyphicon-trash {
+	color: #C04442;
+}
+
+.icons .glyphicon-trash:hover {
+	color: #F00;
+}
+
+.signin {
+	max-width: 350px;
+	margin: 0 auto;
+}

@@ -1,0 +1,38 @@
+<div class="alert alert-danger" ng-show="controller.error">
+	There was a problem logging in. Please try again.
+</div>
+
+<div class="panel panel-default signin">
+	<div class="panel-heading">
+		<h3 class="panel-title"><strong>User Login</strong></h3>
+	</div>
+	
+	<div class="panel-body">
+		<form role="form" ng-submit="controller.login()">
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-user"></span>
+					</span>
+					<input type="text" class="form-control" id="username" ng-model="controller.credentials.username" placeholder="Username">
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-lock"></span>
+					</span>
+					<input type="password" class="form-control" id="password" ng-model="controller.credentials.password" placeholder="Password">
+				</div>
+			</div>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox" ng-model="controller.credentials.remember"> Keep me logged in
+				</label>
+			</div>
+			<button type="submit" class="btn btn-primary btn-block">Submit</button>
+		</form>
+	</div>
+</div>
+
+

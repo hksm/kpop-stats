@@ -52,9 +52,9 @@ app.controller('navigation', function($rootScope, $http, $location) {
 	var self = this;
 	
 	var authenticate = function(credentials, callback) {
-		var headers = credentials ? {authorization : "Basic " + btoa(credentials.username + ":" + credentials.password)
+		var headers = credentials ? {authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
 		} : {};
-		$http.get('user', {headers : headers}).then(function(response) {
+		$http.get('user', {headers: headers}).then(function(response) {
 			if (response.data.name) {
 				$rootScope.authenticated = true;
 			} else {

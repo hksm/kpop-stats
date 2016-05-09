@@ -169,6 +169,7 @@ app.controller('artistDetailsController', ['dataFactory', '$routeParams', functi
 	var self = this;
 	
 	self.artist = {};
+	self.mainImageLink = null;
 	
 	function getArtist(id) {
 		dataFactory.getArtist(id)
@@ -177,5 +178,13 @@ app.controller('artistDetailsController', ['dataFactory', '$routeParams', functi
 			});
 	}
 	
+	function getMainImage(id) {
+		dataFactory.getMainImageLink('artist', id)
+			.then(function(response) {
+				self.mainImageLink = response.data;
+			});
+	}
+	
 	getArtist($routeParams.artistId);
+	getMainImage($routeParams.artistId);
 }]);

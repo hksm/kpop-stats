@@ -1,12 +1,18 @@
 <div class="row">
 	<div class="col-md-4">
-		<img ng-src="/image/artist/{{ vm.artist.id }}" alt="{{ vm.artist.name }}" class="img-responsive">
+		<div class="thumbnail">
+			<img ng-src="{{ vm.mainImageLink }}" alt="{{ vm.artist.name }}" class="img-responsive">
+		</div>
 	</div>
 	<div class="col-md-8">
 		<div class="page-header">
-			<h1>{{ vm.artist.name }}</h1>
+			<h1><strong>{{ vm.artist.name }}</strong> <small>{{ vm.artist.alias }}</small></h1>
 		</div>
-		
-		<p>Alias: {{ vm.artist.alias }}</p>
+
+		<ol class="breadcrumb">
+			<li class="active">Overview</li>
+			<li><a href="#">Albums</a></li>
+			<li><a href="#">Top 10 Songs</a></li>
+		</ol>
 	</div>
 </div>

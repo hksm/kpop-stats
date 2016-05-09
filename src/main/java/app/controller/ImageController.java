@@ -61,14 +61,14 @@ public class ImageController {
 		}
 	}
 	
-	@RequestMapping(value="/images/{category}/{id}/last")
+	@RequestMapping(value="/images/{category}/{id}/last", method=RequestMethod.GET, produces=MediaType.TEXT_PLAIN_VALUE)
 	public String getLinkFromLast(@PathVariable Category category, @PathVariable Long id) {
 		Image image = imageRepository.findFirstByCategoryAndEspecificIdOrderByTimestampDesc(category, id);
 		
 		return image.getLink();
 	}
 	
-	@RequestMapping(value="/images/{category}/{id}")
+	@RequestMapping(value="/images/{category}/{id}", method=RequestMethod.GET, produces=MediaType.TEXT_PLAIN_VALUE)
 	public List<String> getLinkFromAll(@PathVariable Category category, @PathVariable Long id) {
 		List<Image> images = imageRepository.findAllByCategoryAndEspecificId(category, id);
 		List<String> links = new ArrayList<>();

@@ -40,10 +40,11 @@ app.factory('dataFactory', ['$http', function($http) {
 	dataFactory.saveDownload = function(week) {
 		return $http.post('/downloads', week);
 	};
-	
-	dataFactory.logArtistImage = function(artist) {
-		return $http.post('/upload/artist', artist, fileName);
+		
+	dataFactory.getMainImageLink = function(category, especificId) {
+		return $http.get('/images/' + category + '/' + especificId + '/last');
 	};
+	
 	
 	return dataFactory;
 }]);

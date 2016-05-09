@@ -1,10 +1,13 @@
 package app.controller;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -42,6 +45,7 @@ public class ImageController {
 				
 				Image image = new Image();
 				image.setCategory(category);
+				image.setEspecificId(id);
 				image.setLink(link);
 				image.setTimestamp(new DateTime());
 				
@@ -56,25 +60,21 @@ public class ImageController {
 			return "The upload failed";
 		}
 	}
-	/*
-	@RequestMapping(value="/image/artist/{id}", method=RequestMethod.GET, produces={"image/jpg", "image/jpeg", "image/png"})
-	public @ResponseBody ResponseEntity<ByteArrayResource> serveArtistImage(@PathVariable Long id) {
-		Image img = imageRepository.findFirstByArtistOrderByTimestampDesc(imageRepository.findOne(id));
+	
+	@RequestMapping(value="/images/{category}/{id}/last")
+	public String getLinkFromLast(@PathVariable Category category, @PathVariable Long id) {
+		Image image = imageRepository.findFirstByCategoryAndEspecificIdOrderByTimestampDesc(category, id);
 		
-		
-		File file = new File(img != null ? img.getAbsolutePath() : "../kpop-stats-img/artist/not-found.jpg");
-		Path path = file.toPath();
-
-	    try {
-			return ResponseEntity.ok()
-			        .contentLength(file.length())
-			        .contentType(MediaType.parseMediaType(Files.probeContentType(path)))
-			        .body(new ByteArrayResource(Files.readAllBytes(path)));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	    
-	    return null;
+		return image.getLink();
 	}
-	*/	
+	
+	@RequestMapping(value="/images/{category}/{id}")
+	public List<String> getLinkFromAll(@PathVariable Category category, @PathVariable Long id) {
+		List<Image> images = imageRepository.findAllByCategoryAndEspecificId(category, id);
+		List<String> links = new ArrayList<>();
+		for (Image img : images) {
+			links.add(img.getLink());
+		}
+		return links;
+	}
 }

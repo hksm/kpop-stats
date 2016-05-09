@@ -18,6 +18,9 @@ public class Image {
 	private Category category;
 	
 	@NotNull
+	private Long especificId;
+	
+	@NotNull
 	private String link;
 	
 	@NotNull
@@ -37,6 +40,14 @@ public class Image {
 
 	public void setCategory(Category category) {
 		this.category = category;
+	}
+
+	public Long getEspecificId() {
+		return especificId;
+	}
+
+	public void setEspecificId(Long especificId) {
+		this.especificId = especificId;
 	}
 
 	public String getLink() {

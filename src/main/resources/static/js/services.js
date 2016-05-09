@@ -57,10 +57,9 @@ app.factory('focus', ['$rootScope', '$timeout', function($rootScope, $timeout) {
 }]);
 
 app.service('fileUpload', ['$http', function($http) {
-	this.uploadFileToUrl = function(file, name, category, id) {
+	this.uploadFileToUrl = function(file, category, id) {
         var fd = new FormData();
         fd.append('file', file);
-        fd.append('name', name);
         fd.append('category', category);
         fd.append('id', id);
 

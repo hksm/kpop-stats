@@ -18,13 +18,7 @@ public class Image {
 	private Category category;
 	
 	@NotNull
-	private Long link;
-	
-	@NotNull
-	private String fileName;
-	
-	@NotNull
-	private String absolutePath;
+	private String link;
 	
 	@NotNull
 	private DateTime timestamp;
@@ -45,28 +39,12 @@ public class Image {
 		this.category = category;
 	}
 
-	public Long getLink() {
+	public String getLink() {
 		return link;
 	}
 
-	public void setLink(Long link) {
+	public void setLink(String link) {
 		this.link = link;
-	}
-
-	public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	public String getAbsolutePath() {
-		return absolutePath;
-	}
-
-	public void setAbsolutePath(String absolutePath) {
-		this.absolutePath = absolutePath;
 	}
 
 	public DateTime getTimestamp() {

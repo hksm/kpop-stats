@@ -52,7 +52,7 @@ app.controller('artistController', ['dataFactory', 'fileUpload', 'lastfmFactory'
 	}
 	
 	self.uploadArtistPic = function(file) {
-		fileUpload.uploadFileToUrl(file, file.name, "ARTIST", self.artist.id)
+		fileUpload.uploadFileToUrl(file, "ARTIST", self.artist.id)
 			.then(function(response) {
 				self.message = response.data;
 				getArtists();

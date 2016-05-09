@@ -2,6 +2,7 @@ package app.controller;
 
 import java.io.File;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import app.model.Category;
+import app.model.Image;
 import app.repository.ImageRepository;
 import app.service.CloudinaryService;
 
@@ -24,8 +26,7 @@ public class ImageController {
 	CloudinaryService cloudinaryService;
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
-	public String handleFileUpload(@RequestParam("name") String name,
-								   @RequestParam("file") MultipartFile file,
+	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 								   @RequestParam("category") Category category,
 								   @RequestParam("id") Long id) {
 		if (!file.getContentType().matches("(?i)image/jpeg|image/jpg|image/image/png")) {
@@ -36,9 +37,17 @@ public class ImageController {
 			try {
 				File temp = File.createTempFile("img", file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
 				file.transferTo(temp);
-				cloudinaryService.upload(temp);
+				String link = cloudinaryService.upload(temp);
 				temp.delete();
-				return name + " successfully uploaded!";
+				
+				Image image = new Image();
+				image.setCategory(category);
+				image.setLink(link);
+				image.setTimestamp(new DateTime());
+				
+				imageRepository.save(image);
+				
+				return "Image successfully uploaded!";
 			} catch (Exception e) {
 				e.printStackTrace();
 				return "The upload failed";

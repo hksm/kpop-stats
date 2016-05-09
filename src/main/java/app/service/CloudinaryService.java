@@ -19,12 +19,12 @@ public class CloudinaryService {
 	private String apiKey;
 	private String apiSecret;
 	
-	public void upload(File file) throws IOException {
-		getCloudinary().uploader().upload(file, ObjectUtils.emptyMap());
+	public String upload(File file) throws IOException {
+		return (String) getCloudinary().uploader().upload(file, ObjectUtils.emptyMap()).get("secure_url");
 	}
 	
-	public void upload(File file, Map<String,Object> map) throws IOException {
-		getCloudinary().uploader().upload(file, map);
+	public String upload(File file, Map<String,Object> map) throws IOException {
+		return (String) getCloudinary().uploader().upload(file, map).get("secure_url");
 	}
 	
 	@Bean

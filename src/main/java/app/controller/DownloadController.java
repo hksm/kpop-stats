@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 
 import javax.persistence.NonUniqueResultException;
 
+import org.joda.time.DateTime;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -22,32 +23,46 @@ import org.springframework.web.bind.annotation.RestController;
 
 import app.model.Album;
 import app.model.Artist;
+import app.model.Category;
 import app.model.Download;
+import app.model.Image;
 import app.model.Track;
 import app.model.Week;
 import app.repository.AlbumRepository;
 import app.repository.ArtistRepository;
 import app.repository.DownloadRepository;
+import app.repository.ImageRepository;
 import app.repository.TrackRepository;
 import app.repository.WeekRepository;
+import app.service.CloudinaryService;
+import app.service.LastfmService;
 
 @RestController
 public class DownloadController {
 
 	@Autowired
-	private DownloadRepository dao;
+	private DownloadRepository downloadRepository;
 	
 	@Autowired
-	private ArtistRepository aDao;
+	private ArtistRepository artistRepository;
 	
 	@Autowired
-	private TrackRepository tDao;
+	private TrackRepository trackRepository;
 	
 	@Autowired
-	private AlbumRepository alDao;
+	private AlbumRepository albumRepository;
 	
 	@Autowired
-	private WeekRepository wDao;
+	private WeekRepository weekRepository;
+	
+	@Autowired
+	private ImageRepository imageRepository;
+	
+	@Autowired
+	private LastfmService lastfmService;
+	
+	@Autowired
+	private CloudinaryService cloudinaryService;
 	
 	@RequestMapping(value="/weeklist", method=RequestMethod.GET)
 	public List<Week> getWeeksList() {
@@ -68,21 +83,9 @@ public class DownloadController {
 		return weeks;
 	}
 	
-	@RequestMapping(value="/test", method=RequestMethod.GET, produces=MediaType.TEXT_PLAIN_VALUE)
-	public Track test() {
-		Set<Artist> artists = new HashSet<>();
-		artists.add(aDao.findByNameOrAliasIgnoreCase("IU"));
-		artists.add(aDao.findByNameOrAliasIgnoreCase("HIGH4"));
-		
-		System.out.println(artists.size());
-		Track t = tDao.findByArtistAndTitleIgnoreCase(artists, new Long(artists.size()), "사랑");
-		System.out.println(t == null ? "null" : t.getTitle());
-		return t;
-	}
-	
 	@RequestMapping(value="/downloads", method=RequestMethod.GET)
 	public List<Download> listAll() {
-		return (List<Download>) dao.findAll();
+		return (List<Download>) downloadRepository.findAll();
 	}
 	
 	@RequestMapping(value="/downloads", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
@@ -103,9 +106,9 @@ public class DownloadController {
 					String[] nameAndAlias = a.split("[\\(\\)]");
 					Artist artist = null;
 					try {
-						artist = aDao.findByNameOrAliasIgnoreCase(nameAndAlias[nameAndAlias.length-1]);
+						artist = artistRepository.findByNameOrAliasIgnoreCase(nameAndAlias[nameAndAlias.length-1]);
 					} catch(NonUniqueResultException e) {
-						artist = aDao.findByNameOrAliasIgnoreCase(nameAndAlias[0]);
+						artist = artistRepository.findByNameOrAliasIgnoreCase(nameAndAlias[0]);
 					}
 					if (artist == null) {
 						artist = new Artist();
@@ -113,19 +116,30 @@ public class DownloadController {
 						if (nameAndAlias[nameAndAlias.length-1] != nameAndAlias[0]) {
 							artist.setAlias(nameAndAlias[0]);
 						}
-						aDao.save(artist);
+						artistRepository.save(artist);
+						
+						String lastfmLink = lastfmService.getMainArtistPicUrl(artist);
+						if (lastfmLink != null) {
+							String link = cloudinaryService.upload(lastfmLink);
+							Image image = new Image();
+							image.setCategory(Category.ARTIST);
+							image.setEspecificId(artist.getId());
+							image.setLink(link);
+							image.setTimestamp(new DateTime());
+							imageRepository.save(image);
+						}
 					}
 					artists.add(artist);
 				}
 				Track track = null;
 				String title = line.getElementsByTag("td").get(3).child(0).text();
 				System.out.println(artists.iterator().next().getName());
-				track = tDao.findByArtistAndTitleIgnoreCase(artists, new Long(artists.size()), title);
+				track = trackRepository.findByArtistAndTitleIgnoreCase(artists, new Long(artists.size()), title);
 				if (track == null) {
 					track = new Track();
 					track.setTitle(title);
 					track.setArtists(artists);
-					tDao.save(track);
+					trackRepository.save(track);
 				}
 				
 				String producerCompany = line.getElementsByTag("td").get(5).child(0).text();
@@ -133,7 +147,7 @@ public class DownloadController {
 				
 				Album album = null;
 				String albumTitle = parts[1];
-				album = alDao.findByTitleAndCompanyIgnoreCase(albumTitle, producerCompany, distributorCompany);
+				album = albumRepository.findByTitleAndCompanyIgnoreCase(albumTitle, producerCompany, distributorCompany);
 
 				if (album == null) {
 					album = new Album();
@@ -144,28 +158,39 @@ public class DownloadController {
 					Set<Track> tracks = new HashSet<Track>();
 					tracks.add(track);
 					album.setTracks(tracks);
-					alDao.save(album);
+					albumRepository.save(album);
+					
+					String lastfmLink = lastfmService.getMainAlbumPicUrl(album);
+					if (lastfmLink != null) {
+						String link = cloudinaryService.upload(lastfmLink);
+						Image image = new Image();
+						image.setCategory(Category.ALBUM);
+						image.setEspecificId(album.getId());
+						image.setLink(link);
+						image.setTimestamp(new DateTime());
+						imageRepository.save(image);
+					}
 				} else {
 					if (!album.getTracks().contains(track)) {
 						Set<Track> tracks = album.getTracks() != null ? album.getTracks() : new HashSet<>();
 						tracks.add(track);
 						album.setTracks(tracks);
-						alDao.save(album);
+						albumRepository.save(album);
 					}
 				}
 				
-				if (wDao.findByYearAndWeek(week.getYear(), week.getWeek()) == null) {
-					wDao.save(week);
+				if (weekRepository.findByYearAndWeek(week.getYear(), week.getWeek()) == null) {
+					weekRepository.save(week);
 				}
 				
-				week = wDao.findByYearAndWeek(week.getYear(), week.getWeek());
+				week = weekRepository.findByYearAndWeek(week.getYear(), week.getWeek());
 				
 				Download download = new Download();
 				download.setRanking(Integer.parseInt(line.getElementsByTag("td").get(0).text()));
 				download.setWeek(week);
 				download.setTrack(track);
 				download.setDownloads(Integer.parseInt(line.getElementsByTag("td").get(4).text().replaceAll(",", "")));
-				dao.save(download);
+				downloadRepository.save(download);
 			}
 			System.out.println("Process finalized!");
 		} catch(Exception e) {

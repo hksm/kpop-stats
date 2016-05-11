@@ -1,6 +1,7 @@
 package app.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +15,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import app.model.Artist;
 import app.model.Category;
 import app.model.Image;
+import app.repository.AlbumRepository;
+import app.repository.ArtistRepository;
 import app.repository.ImageRepository;
 import app.service.CloudinaryService;
+import app.service.LastfmService;
 
 @RestController
 public class ImageController {
@@ -27,6 +32,15 @@ public class ImageController {
 	
 	@Autowired
 	CloudinaryService cloudinaryService;
+	
+	@Autowired
+	LastfmService lastfmService;
+	
+	@Autowired
+	ArtistRepository artistRepository;
+	
+	@Autowired
+	AlbumRepository albumRepository;
 	
 	@RequestMapping(value="/upload", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
 	public String handleFileUpload(@RequestParam("file") MultipartFile file,
@@ -58,6 +72,40 @@ public class ImageController {
 			}
 		} else {
 			return "The upload failed";
+		}
+	}
+	
+	@RequestMapping(value="/images", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
+	public String postFromLastFm(@RequestParam("category") Category category,
+								 @RequestParam("id") Long id) {
+		String uploadErrorMessage = "Error uploading the image.";
+		String lastfmUrl;
+		switch(category) {
+			case ARTIST:
+				lastfmUrl = lastfmService.getMainArtistPicUrl(artistRepository.findOne(id));
+				if (lastfmUrl == null) {
+					return "Image for the especified artist not found.";
+				}
+				break;
+			case ALBUM:
+				lastfmUrl = lastfmService.getMainAlbumPicUrl(albumRepository.findOne(id));
+				if (lastfmUrl == null) {
+					return "Image for the especified album not found.";
+				}
+				break;
+			default:
+				return uploadErrorMessage;
+		}
+		try {
+			String imgUrl = cloudinaryService.upload(lastfmUrl);
+			if (imgUrl == null) {
+				return uploadErrorMessage;
+			}
+			imageRepository.save(new Image(category, id, imgUrl, new DateTime()));
+			return "Image uploaded successfully!";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return uploadErrorMessage;
 		}
 	}
 	

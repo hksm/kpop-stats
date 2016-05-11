@@ -45,6 +45,17 @@ app.factory('dataFactory', ['$http', function($http) {
 		return $http.get('/images/' + category + '/' + especificId + '/last');
 	};
 	
+	dataFactory.saveMainImageLink = function(category, especificId) {
+		var fd = new FormData();
+        fd.append('category', category);
+        fd.append('id', especificId);
+		
+        return $http.post('/images', fd, {
+            transformRequest: angular.identity,
+            headers: {'Content-Type': undefined}
+        });
+	}
+	
 	
 	return dataFactory;
 }]);
@@ -69,27 +80,4 @@ app.service('fileUpload', ['$http', function($http) {
             headers: {'Content-Type': undefined}
         });
     }
-}]);
-
-app.service('lastfmFactory', ['$http', function($http) {
-	var lastfmFactory = {};
-	
-	lastfmFactory.getArtistImage = function(artist) {
-		artistName = null;
-		
-		if(artist.alias === null) {
-			artistName = artist.name;
-		} else {
-			if(artist.alias.indexOf('/') == -1) {
-				artistName = artist.alias;
-			} else {
-				artistName = artist.alias.substring(0, artist.alias.indexOf('/')).trim();
-			}
-		}
-
-		return $http.get("http://ws.audioscrobbler.com/2.0/?method=artist.getInfo" + 
-				"&artist=" + artistName + "&format=json&api_key=6384206c3554160836ad1868f816f7a0");
-	};
-	
-	return lastfmFactory;
 }]);

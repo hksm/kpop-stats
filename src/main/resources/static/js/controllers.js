@@ -1,5 +1,5 @@
-app.controller('artistController', ['dataFactory', 'fileUpload', 'lastfmFactory', '$scope', 'focus', 
-                                    function(dataFactory, fileUpload, lastfmFactory, $scope, focus) {
+app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focus', 
+                                    function(dataFactory, fileUpload, $scope, focus) {
 	var self = this;
 	
 	var getArtists = function() {
@@ -58,18 +58,6 @@ app.controller('artistController', ['dataFactory', 'fileUpload', 'lastfmFactory'
 				getArtists();
 			}, function(response) {
 				self.message = response.statusText;
-			});
-	}
-	
-	self.uploadPicFromLastfm = function() {
-		lastfmFactory.getArtistImage(self.artist)
-			.then(function(response) {
-				obj = response.data.artist.image.filter(function(element) {
-					return element.size === "mega";
-				});
-				uploadArtistPic(obj[0]["#text"]);
-			}, function(reponse) {
-				console.log(response.statusText);
 			});
 	}
 	
@@ -182,6 +170,16 @@ app.controller('artistDetailsController', ['dataFactory', '$routeParams', functi
 		dataFactory.getMainImageLink('artist', id)
 			.then(function(response) {
 				self.mainImageLink = response.data;
+			});
+	}
+	
+	self.updateMainPic = function() {
+		dataFactory.saveMainImageLink('artist', $routeParams.artistId)
+			.then(function(response) {
+				self.message = response.data;
+				getMainImage($routeParams.artistId);
+			}, function(response) {
+				self.message = response.statusText;
 			});
 	}
 	

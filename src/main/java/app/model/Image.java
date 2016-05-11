@@ -26,6 +26,16 @@ public class Image {
 	@NotNull
 	private DateTime timestamp;
 
+	public Image() {
+	}
+
+	public Image(Category category, Long especificId, String link, DateTime timestamp) {
+		this.category = category;
+		this.especificId = especificId;
+		this.link = link;
+		this.timestamp = timestamp;
+	}
+
 	public Long getId() {
 		return id;
 	}

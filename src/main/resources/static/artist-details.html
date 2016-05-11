@@ -1,8 +1,13 @@
+<div class="alert alert-info" ng-show="vm.message">
+	{{ vm.message }}
+</div>
+
 <div class="row">
 	<div class="col-md-4">
 		<div class="thumbnail">
 			<img ng-src="{{ vm.mainImageLink }}" alt="{{ vm.artist.name }}" class="img-responsive">
 		</div>
+		<button class="btn btn-default" ng-click="vm.updateMainPic()">Update Main Image</button>
 	</div>
 	<div class="col-md-8">
 		<div class="page-header">

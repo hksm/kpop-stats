@@ -21,7 +21,7 @@ public class Week {
 	
 	@NotNull
 	private String description;
-	
+
 	public Integer getId() {
 		return id;
 	}

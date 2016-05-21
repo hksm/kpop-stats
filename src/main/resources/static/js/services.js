@@ -26,11 +26,11 @@ app.factory('dataFactory', ['$http', function($http) {
 	};
 	
 	dataFactory.getWeeksList = function() {
-		return $http.get('/weeklist');
+		return $http.get('/weeks/list');
 	};
 	
 	dataFactory.saveWeeksList = function() {
-		return $http.post('/weeklist');
+		return $http.post('/weeks/list');
 	};
 	
 	dataFactory.getDownloads = function() {
@@ -39,10 +39,6 @@ app.factory('dataFactory', ['$http', function($http) {
 	
 	dataFactory.saveDownload = function(week) {
 		return $http.post('/downloads', week);
-	};
-		
-	dataFactory.getMainImageLink = function(category, especificId) {
-		return $http.get('/images/' + category + '/' + especificId + '/last');
 	};
 	
 	dataFactory.saveMainImageLink = function(category, especificId) {
@@ -54,8 +50,7 @@ app.factory('dataFactory', ['$http', function($http) {
             transformRequest: angular.identity,
             headers: {'Content-Type': undefined}
         });
-	}
-	
+	};	
 	
 	return dataFactory;
 }]);

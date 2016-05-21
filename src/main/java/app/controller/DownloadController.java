@@ -1,7 +1,5 @@
 package app.controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,25 +61,6 @@ public class DownloadController {
 	
 	@Autowired
 	private CloudinaryService cloudinaryService;
-	
-	@RequestMapping(value="/weeklist", method=RequestMethod.GET)
-	public List<Week> getWeeksList() {
-		List<Week> weeks = new ArrayList<>();
-		try {
-			Document doc = Jsoup.connect("http://gaonchart.co.kr/main/section/chart/online.gaon?nationGbn=T&serviceGbn=S1020").get();
-			Elements options = doc.select("select#chart_week_select > option:not(:first-child)");
-			for (Element e : options) {
-				Week w = new Week();
-				w.setYear(Integer.parseInt(e.attr("value").substring(0, 4)));
-				w.setWeek(Integer.parseInt(e.attr("value").substring(4)));
-				w.setDescription(e.text());
-				weeks.add(w);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return weeks;
-	}
 	
 	@RequestMapping(value="/downloads", method=RequestMethod.GET)
 	public List<Download> listAll() {

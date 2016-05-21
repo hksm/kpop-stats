@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import app.model.Artist;
 import app.model.Category;
 import app.model.Image;
 import app.repository.AlbumRepository;

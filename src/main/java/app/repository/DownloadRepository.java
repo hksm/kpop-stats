@@ -7,5 +7,5 @@ import app.model.Download;
 
 @Transactional
 public interface DownloadRepository extends CrudRepository<Download, Long> {
-
+	
 }

@@ -25,8 +25,8 @@ app.factory('dataFactory', ['$http', function($http) {
 		return $http.post('/tracks', track);
 	};
 	
-	dataFactory.getWeeksList = function() {
-		return $http.get('/weeks/list');
+	dataFactory.getMissingWeeks = function() {
+		return $http.get('/weeks/missing');
 	};
 	
 	dataFactory.saveWeeksList = function() {

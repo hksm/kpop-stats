@@ -107,17 +107,18 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 	
 	self.weeks = null;
 	
-	self.getWeeksFn = function() {
-		return getWeeks();
-	}
+	self.bar = {
+			max: 0,
+			value: 0
+		};
 	
-	function getWeeks() {
+	var getWeeks = function() {
 		var deferred = $q.defer();
 		
 		if (self.weeks !== null) {
 			deferred.resolve(self.weeks);
 		} else {
-			dataFactory.getWeeksList()
+			dataFactory.getMissingWeeks()
 				.then(function(response) {
 					self.weeks = response.data;
 					deferred.resolve(response.data);
@@ -126,6 +127,10 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 				});
 		}
 		return deferred.promise;	
+	}
+	
+	self.getWeeksFn = function() {
+		return getWeeks();
 	}
 	
 	var getDownloads = function() {
@@ -148,6 +153,30 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 			}, function(response) {
 				self.message = response.statusText;
 			});
+	}
+	
+	var multiDownloads = function() {
+		var arr = self.weeks.slice(0, self.weeks.length >= 10 ? 9 : self.weeks.length);
+		self.bar.max = arr.length;
+		self.bar.value = 0;
+		arr.forEach(function(week, i) {
+			dataFactory.saveDownload(week)
+				.then(function(response) {
+					if (response.data === "Downloads added successfully") {
+						self.bar.value++;
+					}
+				});
+		});
+	}
+	
+	self.addMultiDownloads = function() {
+		if (self.weeks === null) {
+			getWeeks().then(function(result) {
+				multiDownloads();
+			});
+		} else {
+			multiDownloads();
+		}
 	}
 	
 	getDownloads();

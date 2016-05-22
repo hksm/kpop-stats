@@ -9,15 +9,17 @@
 			<oi-select oi-options="week.description for week in vm.getWeeksFn()" ng-model="vm.week"></oi-select>
 		</div>
 	</div>
-	{{ vm.week }}
 	
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
 			<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
+			<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.addMultiDownloads()">Submit Last 10</button>
 			<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.updateWeeks()">Update DB</button>
 		</div>
 	</div>
 </form>
+
+<uib-progressbar max="vm.bar.max" value="vm.bar.value" type="success"><strong>{{ vm.bar.value }}%</strong></uib-progressbar>
 
 <table class="table table-striped" ng-if="vm.downloadList">
 	<thead>

@@ -4,23 +4,38 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
 
-@Entity
+@Entity @Table(uniqueConstraints=@UniqueConstraint(columnNames={"ranking", "week"}))
 public class Download {
 
 	@Id @GeneratedValue
 	private Long id;
 	
-	@ManyToOne
+	@ManyToOne @NotNull
 	private Track track;
 	
+	@NotNull
 	private Integer downloads;
 	
-	@ManyToOne
+	@ManyToOne  @NotNull
 	private Week week;
 	
+	@NotNull
 	private Integer ranking;
 	
+	public Download() {
+	}
+
+	public Download(Track track, Integer downloads, Week week, Integer ranking) {
+		this.track = track;
+		this.downloads = downloads;
+		this.week = week;
+		this.ranking = ranking;
+	}
+
 	public Long getId() {
 		return id;
 	}

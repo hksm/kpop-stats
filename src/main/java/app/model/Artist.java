@@ -16,6 +16,18 @@ public class Artist {
 	
 	private String alias;
 
+	public Artist() {
+	}
+	
+	public Artist(String name) {
+		this.name = name;
+	}
+	
+	public Artist(String name, String alias) {
+		this.name = name;
+		this.alias = alias;
+	}
+
 	public Long getId() {
 		return id;
 	}

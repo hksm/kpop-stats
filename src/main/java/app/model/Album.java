@@ -29,6 +29,18 @@ public class Album {
 	@NotNull
 	private String distributorCompany;
 
+	public Album() {
+	}
+	
+	public Album(Set<Artist> artists, String title, Set<Track> tracks, String producerCompany,
+			String distributorCompany) {
+		this.artists = artists;
+		this.title = title;
+		this.tracks = tracks;
+		this.producerCompany = producerCompany;
+		this.distributorCompany = distributorCompany;
+	}
+
 	public Long getId() {
 		return id;
 	}

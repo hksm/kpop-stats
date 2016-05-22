@@ -19,6 +19,14 @@ public class Track {
 	
 	@NotNull
 	private String title;
+	
+	public Track() {
+	}
+
+	public Track(Set<Artist> artists, String title) {
+		this.artists = artists;
+		this.title = title;
+	}
 
 	public Long getId() {
 		return id;

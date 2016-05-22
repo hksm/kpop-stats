@@ -2,7 +2,6 @@ package app.model;
 
 import java.beans.PropertyEditorSupport;
 
-
 public class CategoryEditor extends PropertyEditorSupport {
 
 	@Override

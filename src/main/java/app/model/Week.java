@@ -21,6 +21,15 @@ public class Week {
 	
 	@NotNull
 	private String description;
+	
+	public Week() {
+	}
+
+	public Week(int year, int week, String description) {
+		this.year = year;
+		this.week = week;
+		this.description = description;
+	}
 
 	public Integer getId() {
 		return id;

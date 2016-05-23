@@ -70,6 +70,7 @@ public class DownloadController {
 	@RequestMapping(value="/downloads", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
 	public String insert(@RequestBody Week week) {
 		try {
+			// Get table rows
 			String url = "http://gaonchart.co.kr/main/section/chart/online.gaon?nationGbn=T&serviceGbn=S1020"
 						+ "&targetTime=" + week.getWeek() + "&hitYear=" + week.getYear() + "&termGbn=week";
 			Document doc = Jsoup.connect(url).get();
@@ -78,9 +79,12 @@ public class DownloadController {
 			lines.remove(0);
 			
 			for (Element line : lines) {
+				// Split artists + album cell
 				String[] parts = line.getElementsByTag("td").get(3).child(1).text().split(Pattern.quote("|"));
 				String[] multiArtists = parts[0].split(Pattern.quote(", "));
 				Set<Artist> artists = new HashSet<>();
+				
+				// Add each artist
 				for (String a : multiArtists) {
 					String[] nameAndAlias = a.split("[\\(\\)]");
 					Artist artist = null;
@@ -90,8 +94,7 @@ public class DownloadController {
 						artist = artistRepository.findByNameOrAliasIgnoreCase(nameAndAlias[0]);
 					}
 					if (artist == null) {
-						artist = new Artist();
-						artist.setName(nameAndAlias[nameAndAlias.length-1]);
+						artist = new Artist(nameAndAlias[nameAndAlias.length-1]);
 						if (nameAndAlias[nameAndAlias.length-1] != nameAndAlias[0]) {
 							artist.setAlias(nameAndAlias[0]);
 						}
@@ -100,53 +103,39 @@ public class DownloadController {
 						String lastfmLink = lastfmService.getMainArtistPicUrl(artist);
 						if (lastfmLink != null) {
 							String link = cloudinaryService.upload(lastfmLink);
-							Image image = new Image();
-							image.setCategory(Category.ARTIST);
-							image.setEspecificId(artist.getId());
-							image.setLink(link);
-							image.setTimestamp(new DateTime());
+							Image image = new Image(Category.ARTIST, artist.getId(), link, new DateTime());
 							imageRepository.save(image);
 						}
 					}
 					artists.add(artist);
 				}
+				
+				// Build track
 				Track track = null;
 				String title = line.getElementsByTag("td").get(3).child(0).text();
-				System.out.println(artists.iterator().next().getName());
 				track = trackRepository.findByArtistAndTitleIgnoreCase(artists, new Long(artists.size()), title);
 				if (track == null) {
-					track = new Track();
-					track.setTitle(title);
-					track.setArtists(artists);
+					track = new Track(artists, title);
 					trackRepository.save(track);
 				}
 				
+				// Build album
 				String producerCompany = line.getElementsByTag("td").get(5).child(0).text();
 				String distributorCompany = line.getElementsByTag("td").get(5).child(1).text();
-				
-				Album album = null;
 				String albumTitle = parts[1];
+				Album album = null;
 				album = albumRepository.findByTitleAndCompanyIgnoreCase(albumTitle, producerCompany, distributorCompany);
 
 				if (album == null) {
-					album = new Album();
-					album.setTitle(albumTitle);
-					album.setArtists(artists);
-					album.setProducerCompany(producerCompany);
-					album.setDistributorCompany(distributorCompany);
 					Set<Track> tracks = new HashSet<Track>();
 					tracks.add(track);
-					album.setTracks(tracks);
+					album = new Album(artists, albumTitle, tracks, producerCompany, distributorCompany);
 					albumRepository.save(album);
 					
 					String lastfmLink = lastfmService.getMainAlbumPicUrl(album);
 					if (lastfmLink != null) {
 						String link = cloudinaryService.upload(lastfmLink);
-						Image image = new Image();
-						image.setCategory(Category.ALBUM);
-						image.setEspecificId(album.getId());
-						image.setLink(link);
-						image.setTimestamp(new DateTime());
+						Image image = new Image(Category.ALBUM, album.getId(), link, new DateTime());
 						imageRepository.save(image);
 					}
 				} else {
@@ -158,23 +147,23 @@ public class DownloadController {
 					}
 				}
 				
+				// Build week
 				if (weekRepository.findByYearAndWeek(week.getYear(), week.getWeek()) == null) {
 					weekRepository.save(week);
 				}
-				
 				week = weekRepository.findByYearAndWeek(week.getYear(), week.getWeek());
 				
-				Download download = new Download();
-				download.setRanking(Integer.parseInt(line.getElementsByTag("td").get(0).text()));
-				download.setWeek(week);
-				download.setTrack(track);
-				download.setDownloads(Integer.parseInt(line.getElementsByTag("td").get(4).text().replaceAll(",", "")));
+				// Build download
+				Download download = new Download(track,
+						Integer.parseInt(line.getElementsByTag("td").get(4).text().replaceAll(",", "")),
+						week, Integer.parseInt(line.getElementsByTag("td").get(0).text()));
 				downloadRepository.save(download);
 			}
-			System.out.println("Process finalized!");
+			
+			return "Downloads added successfully";
 		} catch(Exception e) {
 			e.printStackTrace();
+			return "Error while adding downloads";
 		}
-		return "Downloads added successfully";
 	}
 }

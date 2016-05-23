@@ -41,6 +41,10 @@ app.factory('dataFactory', ['$http', function($http) {
 		return $http.post('/downloads', week);
 	};
 	
+	dataFactory.getMainImageLink = function(category, especificId) {
+		return $http.get('/images/' + category + '/' + especificId + '/last');
+	};	
+	
 	dataFactory.saveMainImageLink = function(category, especificId) {
 		var fd = new FormData();
         fd.append('category', category);

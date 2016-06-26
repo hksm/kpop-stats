@@ -19,7 +19,10 @@
 	</div>
 </form>
 
-<uib-progressbar max="vm.bar.max" value="vm.bar.value" type="success"><strong>{{ vm.bar.value }}%</strong></uib-progressbar>
+<uib-progress max="vm.bar.max">
+	<uib-bar value="vm.bar.value" type="success"><strong>{{ vm.bar.value }}%</strong></uib-bar>
+	<uib-bar value="vm.bar.failValue" type="danger"><strong>{{ vm.bar.value }}%</strong></uib-bar>
+</uib-progress>
 
 <table class="table table-striped" ng-if="vm.downloadList">
 	<thead>

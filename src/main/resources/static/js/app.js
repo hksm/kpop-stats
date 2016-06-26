@@ -13,8 +13,8 @@ app.config(function($routeProvider, $httpProvider) {
 			controllerAs: 'controller'
 		})
 		.when('/register', {
-			templateUrl: 'registration.html',
-			controller: 'registerController',
+			templateUrl: 'signup.html',
+			controller: 'signupController',
 			controllerAs: 'controller'
 		})
 		.when('/artist', {
@@ -93,11 +93,11 @@ app.controller('navigation', function($rootScope, $http, $location) {
 	};
 });
 
-app.controller('registerController', function($http, $location) {
+app.controller('signupController', function($http, $location) {
 	var self = this;
 	
 	self.register = function() {
-		$http.post('/register', self.user)
+		$http.post('/signup', self.user)
 			.then(function(response) {
 				self.message = response.data;
 				$location.path("/");

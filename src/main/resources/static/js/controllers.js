@@ -156,14 +156,17 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 	}
 	
 	var multiDownloads = function() {
-		var arr = self.weeks.slice(0, self.weeks.length >= 10 ? 9 : self.weeks.length);
+		var arr = self.weeks.slice(0, self.weeks.length > 10 ? 10 : self.weeks.length);
 		self.bar.max = arr.length;
 		self.bar.value = 0;
+		self.bar.failValue = 0;
 		arr.forEach(function(week, i) {
 			dataFactory.saveDownload(week)
 				.then(function(response) {
 					if (response.data === "Downloads added successfully") {
 						self.bar.value++;
+					} else if (response.data === "Error while adding downloads") {
+						self.bar.failValue++;
 					}
 				});
 		});

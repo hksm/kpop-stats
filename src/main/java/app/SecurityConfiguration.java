@@ -56,7 +56,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.and()
 			.authorizeRequests()
 				.antMatchers("/fonts/**", "/index.html", "/home.html", "/login.html", "/artist.html", 
-						"/track.html", "/register", "/registration.html", "/").permitAll()
+						"/track.html", "/download.html", "/signup.html", "/").permitAll()
 				.anyRequest().authenticated()
 		.and()
 			.formLogin().loginPage("/login.html")
@@ -76,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		return new OncePerRequestFilter() {
 			@Override
 			protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, 
-					FilterChain filterChain) throws ServletException, IOException {
+											FilterChain filterChain) throws ServletException, IOException {
 				CsrfToken csfr = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
 				if (csfr != null) {
 					Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");

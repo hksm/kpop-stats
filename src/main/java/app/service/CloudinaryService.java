@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
 import com.cloudinary.Cloudinary;
+import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
 
 @Service
@@ -40,7 +41,8 @@ public class CloudinaryService {
 	}
 	
 	public String upload(String url) throws IOException {
-		return (String) getCloudinary().uploader().upload(url, ObjectUtils.emptyMap()).get("secure_url");
+		String ecoUrl = getCloudinary().url().transformation(new Transformation().quality("auto:eco").fetchFormat("auto")).type("fetch").imageTag(url);
+		return (String) getCloudinary().uploader().upload(ecoUrl, ObjectUtils.emptyMap()).get("secure_url");
 	}
 	
 	@Bean

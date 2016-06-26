@@ -51,4 +51,9 @@ public class Artist {
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
+
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

@@ -1,5 +1,6 @@
 package app.service;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Map;
@@ -41,7 +42,9 @@ public class LastfmService {
 			Map<String,Object> level3 = level2.get(4);
 			
 			return (String) level3.get("#text");
-		} catch (Exception e) {
+		} catch(IOException e) {
+			return null;
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -63,7 +66,9 @@ public class LastfmService {
 			Map<String,Object> level3 = level2.get(4);
 			
 			return (String) level3.get("#text");
-		} catch (Exception e) {
+		} catch(IOException e) {
+			return null;
+		} catch(Exception e) {
 			e.printStackTrace();
 		}
 		return null;

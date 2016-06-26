@@ -13,6 +13,6 @@ import app.model.Track;
 @Transactional
 public interface TrackRepository extends CrudRepository<Track, Long> {
 	
-	@Query("SELECT t FROM Track t JOIN t.artists a WHERE a IN (:artists) AND t.title LIKE CONCAT('%',:title,'%') GROUP BY t HAVING COUNT(t) = :size")
+	@Query("SELECT t FROM Track t JOIN t.artists a WHERE a IN (:artists) AND t.title = :title GROUP BY t HAVING COUNT(t) = :size")
 	public Track findByArtistAndTitleIgnoreCase(@Param("artists") Set<Artist> artists, @Param("size") Long size, @Param("title") String title);
 }

@@ -1,9 +1,9 @@
 package app.controller;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import app.model.Category;
 import app.model.Image;
@@ -41,39 +40,6 @@ public class ImageController {
 	@Autowired
 	AlbumRepository albumRepository;
 	
-	@RequestMapping(value="/upload", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
-	public String handleFileUpload(@RequestParam("file") MultipartFile file,
-								   @RequestParam("category") Category category,
-								   @RequestParam("id") Long id) {
-		if (!file.getContentType().matches("(?i)image/jpeg|image/jpg|image/image/png")) {
-			return "File type not allowed";
-		}
-		
-		if (!file.isEmpty()) {			
-			try {
-				File temp = File.createTempFile("img", file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".")));
-				file.transferTo(temp);
-				String link = cloudinaryService.upload(temp);
-				temp.delete();
-				
-				Image image = new Image();
-				image.setCategory(category);
-				image.setEspecificId(id);
-				image.setLink(link);
-				image.setTimestamp(new DateTime());
-				
-				imageRepository.save(image);
-				
-				return "Image successfully uploaded!";
-			} catch (Exception e) {
-				e.printStackTrace();
-				return "The upload failed";
-			}
-		} else {
-			return "The upload failed";
-		}
-	}
-	
 	@RequestMapping(value="/images", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)
 	public String postFromLastFm(@RequestParam("category") Category category,
 								 @RequestParam("id") Long id) {
@@ -96,11 +62,11 @@ public class ImageController {
 				return uploadErrorMessage;
 		}
 		try {
-			String imgUrl = cloudinaryService.upload(lastfmUrl);
-			if (imgUrl == null) {
+			Map<String, String> imgMap = cloudinaryService.upload(lastfmUrl);
+			if (imgMap.isEmpty()) {
 				return uploadErrorMessage;
 			}
-			imageRepository.save(new Image(category, id, imgUrl, new DateTime()));
+			imageRepository.save(new Image(category, id, imgMap.get("url"), imgMap.get("public_id"), new DateTime()));
 			return "Image uploaded successfully!";
 		} catch (IOException e) {
 			e.printStackTrace();

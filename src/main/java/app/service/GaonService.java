@@ -1,6 +1,7 @@
 package app.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -79,18 +80,23 @@ public class GaonService {
 	public Set<Artist> verifyArtists(List<String> artistStringList) {
 		Set<Artist> artists = new HashSet<>();
 		for (String artistString : artistStringList) {
-			List<String> names = Arrays.asList(artistString.split("[\\(\\)]"));
+			List<String> names = new ArrayList<>();
+			if (artistString.length() > 5) {
+				names = Arrays.asList(artistString.split("[\\(\\)]"));
+			} else {
+				names.add(artistString);
+			}
 			Artist artist = null;
 			try {
 				// Try searching by Alias first
-				artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(names.size()-1));
+				artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(0));
 				if (artist == null && names.size() > 1) {
 					// Then Searches by Name
-					artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(0));
+					artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(names.size()-1));
 				}
 			} catch(NonUniqueResultException e) {
-				// Tries to search by Name in case the alias one had multiple results
-				artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(0));
+				// Try to search by Name in case the alias one had multiple results
+				artist = artistRepository.findByNameOrAliasIgnoreCase(names.get(names.size()-1));
 			}
 			// If not yet included in the database
 			if (artist == null) {

@@ -24,15 +24,19 @@ public class Image {
 	private String link;
 	
 	@NotNull
+	private String publicId;
+	
+	@NotNull
 	private DateTime timestamp;
 
 	public Image() {
 	}
 
-	public Image(Category category, Long especificId, String link, DateTime timestamp) {
+	public Image(Category category, Long especificId, String link, String publicId, DateTime timestamp) {
 		this.category = category;
 		this.especificId = especificId;
 		this.link = link;
+		this.publicId = publicId;
 		this.timestamp = timestamp;
 	}
 
@@ -66,6 +70,14 @@ public class Image {
 
 	public void setLink(String link) {
 		this.link = link;
+	}
+
+	public String getPublicId() {
+		return publicId;
+	}
+
+	public void setPublicId(String publicId) {
+		this.publicId = publicId;
 	}
 
 	public DateTime getTimestamp() {

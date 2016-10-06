@@ -13,7 +13,7 @@ app.config(function($routeProvider, $httpProvider) {
 			controllerAs: 'controller'
 		})
 		.when('/register', {
-			templateUrl: 'signup.html',
+			templateUrl: 'register.html',
 			controller: 'signupController',
 			controllerAs: 'controller'
 		})

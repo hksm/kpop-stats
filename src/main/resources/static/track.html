@@ -2,27 +2,34 @@
 	{{ vm.message }}
 </div>
 
-<form class="form-horizontal" ng-submit="vm.addTrack()">	
-	<div class="form-group">
-		<label for="title" class="col-sm-2 control-label">Title</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="title" placeholder="" ng-model="vm.track.title">
-		</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title"><strong>{{ (vm.track.id ? 'Edit' : 'New') }} Track</strong></h3>
 	</div>
-	
-	<div class="form-group">
-		<label for="artist" class="col-sm-2 control-label">Artists</label>
-		<div class="col-sm-10">
-			<oi-select oi-options="artist.name + (artist.alias !== null ? ' / ' + artist.alias : '') for artist in vm.artistList track by artist.id" ng-model="vm.track.artists" multiple></oi-select>
-		</div>
+	<div class="panel-body">
+		<form class="form-horizontal" ng-submit="vm.addTrack()" promise-btn>	
+			<div class="form-group">
+				<label for="title" class="col-sm-2 control-label">Title</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="title" placeholder="" ng-model="vm.track.title">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="artist" class="col-sm-2 control-label">Artists</label>
+				<div class="col-sm-10">
+					<oi-select oi-options="artist.name + (artist.alias !== null ? ' / ' + artist.alias : '') for artist in vm.artistList track by artist.id" ng-model="vm.track.artists" multiple></oi-select>
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
+				</div>
+			</div>
+		</form>
 	</div>
-	
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
-		</div>
-	</div>
-</form>
+</div>
 
 <table class="table table-striped" ng-if="vm.trackList">
 	<thead>
@@ -39,8 +46,10 @@
 			<td>{{ track.title }}</td>
 			<td><span ng-repeat="artist in track.artists">{{ artist.name }} </span></td>
 			<td class="icons">
-				<span class="glyphicon glyphicon-edit" ng-click="carregaEpisodio(episodio.id)"></span>
-				<span class="glyphicon glyphicon-trash" ng-click="deletaEpisodio(episodio.id)"></span>
+				<div class="icons-fixed pull-right">
+					<span class="glyphicon glyphicon-edit" ng-click="carregaEpisodio(episodio.id)"></span>
+					<span class="glyphicon glyphicon-trash" ng-click="deletaEpisodio(episodio.id)"></span>
+				</div>
 			</td>
 		</tr>
 	</tbody>

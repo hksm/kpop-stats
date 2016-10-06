@@ -87,7 +87,7 @@ app.controller('trackController', ['dataFactory', function(dataFactory) {
 	
 	self.addTrack = function() {
 		self.isProcessing = true;
-		dataFactory.saveTrack(self.track)
+		return dataFactory.saveTrack(self.track)
 			.then(function(response) {
 				self.message = response.data;
 				getTracks();
@@ -143,11 +143,11 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 	};
 	
 	self.updateWeeks = function() {
-		dataFactory.saveWeeksList();
+		self.updateWeeksPromisse = dataFactory.saveWeeksList();
 	}
 	
 	self.addDownloads = function() {
-		dataFactory.saveDownload(self.week)
+		return dataFactory.saveDownload(self.week)
 			.then(function(response) {
 				self.message = response.data;
 			}, function(response) {

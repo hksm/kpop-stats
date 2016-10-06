@@ -2,37 +2,44 @@
 	{{ vm.message }}
 </div>
 
-<form class="form-horizontal" ng-submit="vm.addArtist()">
-	<div class="form-group">
-		<label for="name" class="col-sm-2 control-label">Name</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="name" placeholder="" ng-model="vm.artist.name" focus-on="focusMe">
-		</div>
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title"><strong>{{ (vm.artist.id ? 'Edit' : 'New') }} Artist</strong></h3>
 	</div>
-	
-	<div class="form-group">
-		<label for="alias" class="col-sm-2 control-label">Alias</label>
-		<div class="col-sm-10">
-			<input type="text" class="form-control" id="alias" placeholder="" ng-model="vm.artist.alias">
-		</div>
+	<div class="panel-body">
+		<form class="form-horizontal" ng-submit="vm.addArtist()">
+			<div class="form-group">
+				<label for="name" class="col-sm-2 control-label">Name</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="name" placeholder="" ng-model="vm.artist.name" focus-on="focusMe">
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<label for="alias" class="col-sm-2 control-label">Alias</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" id="alias" placeholder="" ng-model="vm.artist.alias">
+				</div>
+			</div>
+			
+			<div class="form-group" ng-if="vm.artist.id > 0">
+				<label for="picture" class="col-sm-2 control-label">Picture</label>
+				<div class="col-sm-10">
+					<file-field class="btn btn-default" ng-class="{'btn-success':vm.artistPicture}" ng-model="vm.artistPicture" preview="previewImage">Teste</file-field>
+					{{ vm.artistPicture.name }}
+				</div>
+			</div>
+			
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
+					<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadArtistPic(vm.artistPicture)">Upload</button>
+					<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadPicFromLastfm()">Get Pic from last.fm</button>
+				</div>
+			</div>
+		</form>
 	</div>
-	
-	<div class="form-group" ng-if="vm.artist.id > 0">
-		<label for="picture" class="col-sm-2 control-label">Picture</label>
-		<div class="col-sm-10">
-			<file-field class="btn btn-default" ng-class="{'btn-success':vm.artistPicture}" ng-model="vm.artistPicture" preview="previewImage">Teste</file-field>
-			{{ vm.artistPicture.name }}
-		</div>
-	</div>
-	
-	<div class="form-group">
-		<div class="col-sm-offset-2 col-sm-10">
-			<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
-			<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadArtistPic(vm.artistPicture)">Upload</button>
-			<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadPicFromLastfm()">Get Pic from last.fm</button>
-		</div>
-	</div>
-</form>
+</div>
 
 <table class="table table-striped" ng-if="vm.artistList">
 	<thead>

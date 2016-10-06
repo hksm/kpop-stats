@@ -71,14 +71,15 @@ public class DownloadController {
 						try {
 							String lastfmLink = lastfmService.getMainArtistPicUrl(artist);
 							if (lastfmLink != null && !lastfmLink.isEmpty()) {
-								String link = cloudinaryService.upload(lastfmLink);
-								image = new Image(Category.ARTIST, artist.getId(), link, new DateTime());
+								Map<String, String> imgMap = cloudinaryService.upload(lastfmLink);
+								image = new Image(Category.ARTIST, artist.getId(), imgMap.get("url"), 
+										imgMap.get("public_id"), new DateTime());
 								imageRepository.save(image);
 							}
 						} catch(FileNotFoundException e) {
 							System.out.println("File Not Found for Artist: " + artist.getName());
 						} catch(Exception e) {
-							System.out.println("Error adding image for Artist: " + artist.getName());
+							System.out.println("Error adding image for Artist: " + artist.getName() + " | " + e.getMessage());
 						}
 					}
 				}
@@ -90,17 +91,22 @@ public class DownloadController {
 				Album album = gaonService.verifyAlbum((String) map.get("album"), track, artists, 
 						(String) map.get("producer"), (String) map.get("distributor"));
 				
-				try {
-					String lastfmLink = lastfmService.getMainAlbumPicUrl(album);
-					if (lastfmLink != null && !lastfmLink.isEmpty()) {
-						String link = cloudinaryService.upload(lastfmLink);
-						Image image = new Image(Category.ALBUM, album.getId(), link, new DateTime());
-						imageRepository.save(image);
+				Image image = null;
+				image = imageRepository.findFirstByCategoryAndEspecificIdOrderByTimestampDesc(Category.ALBUM, album.getId());
+				if (image == null) {
+					try {
+						String lastfmLink = lastfmService.getMainAlbumPicUrl(album);
+						if (lastfmLink != null && !lastfmLink.isEmpty()) {
+							Map<String, String> imgMap = cloudinaryService.upload(lastfmLink);
+							image = new Image(Category.ALBUM, album.getId(), imgMap.get("url"), 
+									imgMap.get("public_id"), new DateTime());
+							imageRepository.save(image);
+						}
+					} catch(FileNotFoundException e) {
+						System.out.println("File Not Found for Album: " + album.getTitle());
+					} catch(Exception e) {
+						System.out.println("Error adding image for Album: " + album.getTitle() + " - " + e.getMessage());
 					}
-				} catch(FileNotFoundException e) {
-					System.out.println("File Not Found for Album: " + album.getTitle());
-				} catch(Exception e) {
-					System.out.println("Error adding image for Album: " + album.getTitle() + " - " + e.getMessage());
 				}
 								
 				// Add week

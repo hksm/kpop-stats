@@ -1,4 +1,5 @@
-var app = angular.module('kpop-stats', ['ngRoute', 'oi.select', 'ui.bootstrap', 'bootstrap.fileField']);
+var app = angular.module('kpop-stats', ['ngRoute', 'ngAnimate', 'oi.select', 'ui.bootstrap', 
+                                        'bootstrap.fileField', 'toastr']);
 
 app.config(function($routeProvider, $httpProvider) {
 	$routeProvider

@@ -1,22 +1,22 @@
 var app = angular.module('kpop-stats', ['ngRoute', 'ngAnimate', 'oi.select', 'ui.bootstrap', 
-                                        'bootstrap.fileField', 'toastr']);
+                                        'bootstrap.fileField', 'toastr', 'angular-ladda']);
 
-app.config(function($routeProvider, $httpProvider) {
+app.config(function($routeProvider, $httpProvider, laddaProvider) {
 	$routeProvider
 		.when('/', {
 			templateUrl: 'home.html',
 			controller: 'home',
-			controllerAs: 'controller'
+			controllerAs: 'vm'
 		})
 		.when('/login', {
 			templateUrl: 'login.html',
 			controller: 'navigation',
-			controllerAs: 'controller'
+			controllerAs: 'vm'
 		})
 		.when('/register', {
 			templateUrl: 'register.html',
 			controller: 'signupController',
-			controllerAs: 'controller'
+			controllerAs: 'vm'
 		})
 		.when('/artist', {
 			templateUrl: 'artist.html',
@@ -40,17 +40,23 @@ app.config(function($routeProvider, $httpProvider) {
 		})
 		.otherwise('/');
 	$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+	
+	laddaProvider.setOption({
+		style: 'slide-left',
+		spinnerSize: 25,
+		spinnerColor: '#000000'
+	});
 });
 
 app.controller('home', function($http) {
-	var self = this;
+	var vm = this;
 	$http.get('/resource').then(function(response) {
-		self.greeting = response.data;
+		vm.greeting = response.data;
 	});
 });
 
 app.controller('navigation', function($rootScope, $http, $location) {
-	var self = this;
+	var vm = this;
 	
 	var authenticate = function(credentials, callback) {
 		var headers = credentials ? {authorization: "Basic " + btoa(credentials.username + ":" + credentials.password)
@@ -68,25 +74,25 @@ app.controller('navigation', function($rootScope, $http, $location) {
 		});
 	};
 	
-	self.navbarCollapsed = false;
+	vm.navbarCollapsed = false;
 	
 	authenticate();
-	self.credentials = {
+	vm.credentials = {
 		remember: true
 	};
-	self.login = function() {
-		authenticate(self.credentials, function() {
+	vm.login = function() {
+		authenticate(vm.credentials, function() {
 			if ($rootScope.authenticated) {
 				$location.path("/");
-				self.error = false;
+				vm.error = false;
 			} else {
 				$location.path("/login");
-				self.error = true;
+				vm.error = true;
 			}
 		});
 	};
 		
-	self.logout = function() {
+	vm.logout = function() {
 		$http.post('logout', {}).finally(function() {
 			$rootScope.authenticated = false;
 			$location.path("/");
@@ -95,15 +101,15 @@ app.controller('navigation', function($rootScope, $http, $location) {
 });
 
 app.controller('signupController', function($http, $location) {
-	var self = this;
+	var vm = this;
 	
-	self.register = function() {
-		$http.post('/signup', self.user)
+	vm.register = function() {
+		$http.post('/signup', vm.user)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				$location.path("/");
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	};
 });

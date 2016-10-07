@@ -1,63 +1,63 @@
 app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focus', 
                                     function(dataFactory, fileUpload, $scope, focus) {
-	var self = this;
+	var vm = this;
 	
 	var getArtists = function() {
 		dataFactory.getArtists()
 			.then(function(response) {
-				self.artistList = response.data;
+				vm.artistList = response.data;
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	};
 	
 	var clearForm = function() {
-		self.artist = {};
+		vm.artist = {};
 	};
 	
 	var loadArtist = function(id) {
 		dataFactory.getArtist(id)
 			.then(function(response) {
-				self.artist = response.data;
+				vm.artist = response.data;
 			});
 	};
 	
-	self.addArtist = function() {
-		self.isProcessing = true;
-		dataFactory.saveArtist(self.artist)
+	vm.addArtist = function() {
+		vm.isProcessing = true;
+		dataFactory.saveArtist(vm.artist)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				getArtists();
 				clearForm();
-				self.isProcessing = false;
+				vm.isProcessing = false;
 			}, function(response) {
-				self.message = response.statusText;
-				self.isProcessing = false;
+				vm.message = response.statusText;
+				vm.isProcessing = false;
 			});
 	};
 	
-	self.editArtist = function(id) {
+	vm.editArtist = function(id) {
 		loadArtist(id);
 		focus('focusMe');
 	}
 	
-	self.deleteArtist = function(id) {
+	vm.deleteArtist = function(id) {
 		dataFactory.deleteArtist(id)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				getArtists();
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	}
 	
-	self.uploadArtistPic = function(file) {
-		fileUpload.uploadFileToUrl(file, "ARTIST", self.artist.id)
+	vm.uploadArtistPic = function(file) {
+		fileUpload.uploadFileToUrl(file, "ARTIST", vm.artist.id)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				getArtists();
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	}
 	
@@ -65,36 +65,36 @@ app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focu
 }]);
 
 app.controller('trackController', ['dataFactory', function(dataFactory) {
-	var self = this;
+	var vm = this;
 	
 	var getArtists = function() {
 		dataFactory.getArtists()
 			.then(function(response) {
-				self.artistList = response.data;
+				vm.artistList = response.data;
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	};
 	
 	var getTracks = function() {
 		dataFactory.getTracks()
 			.then(function(response) {
-				self.trackList = response.data;
+				vm.trackList = response.data;
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	};
 	
-	self.addTrack = function() {
-		self.isProcessing = true;
-		return dataFactory.saveTrack(self.track)
+	vm.addTrack = function() {
+		vm.isProcessing = true;
+		return dataFactory.saveTrack(vm.track)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				getTracks();
-				self.isProcessing = false;
+				vm.isProcessing = false;
 			}, function(response) {
-				self.message = response.statusText;
-				self.isProcessing = false;
+				vm.message = response.statusText;
+				vm.isProcessing = false;
 			});
 	};
 	
@@ -103,11 +103,11 @@ app.controller('trackController', ['dataFactory', function(dataFactory) {
 }]);
 
 app.controller('downloadController', ['dataFactory', '$q', function(dataFactory, $q) {
-	var self = this;
+	var vm = this;
 	
-	self.weeks = null;
+	vm.weeks = null;
 	
-	self.bar = {
+	vm.bar = {
 			max: 0,
 			value: 0
 		};
@@ -115,12 +115,12 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 	var getWeeks = function() {
 		var deferred = $q.defer();
 		
-		if (self.weeks !== null) {
-			deferred.resolve(self.weeks);
+		if (vm.weeks !== null) {
+			deferred.resolve(vm.weeks);
 		} else {
 			dataFactory.getMissingWeeks()
 				.then(function(response) {
-					self.weeks = response.data;
+					vm.weeks = response.data;
 					deferred.resolve(response.data);
 				}, function(response) {
 					deferred.reject(response);
@@ -129,51 +129,51 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 		return deferred.promise;	
 	}
 	
-	self.getWeeksFn = function() {
+	vm.getWeeksFn = function() {
 		return getWeeks();
 	}
 	
 	var getDownloads = function() {
 		dataFactory.getDownloads()
 			.then(function(response) {
-				self.downloadList = response.data;
+				vm.downloadList = response.data;
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	};
 	
-	self.updateWeeks = function() {
-		self.updateWeeksPromisse = dataFactory.saveWeeksList();
+	vm.updateWeeks = function() {
+		vm.updateWeeksPromisse = dataFactory.saveWeeksList();
 	}
 	
-	self.addDownloads = function() {
-		return dataFactory.saveDownload(self.week)
+	vm.addDownloads = function() {
+		return dataFactory.saveDownload(vm.week)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	}
 	
 	var multiDownloads = function() {
-		var arr = self.weeks.slice(0, self.weeks.length > 10 ? 10 : self.weeks.length);
-		self.bar.max = arr.length;
-		self.bar.value = 0;
-		self.bar.failValue = 0;
+		var arr = vm.weeks.slice(0, vm.weeks.length > 10 ? 10 : vm.weeks.length);
+		vm.bar.max = arr.length;
+		vm.bar.value = 0;
+		vm.bar.failValue = 0;
 		arr.forEach(function(week, i) {
 			dataFactory.saveDownload(week)
 				.then(function(response) {
 					if (response.data === "Downloads added successfully") {
-						self.bar.value++;
+						vm.bar.value++;
 					} else if (response.data === "Error while adding downloads") {
-						self.bar.failValue++;
+						vm.bar.failValue++;
 					}
 				});
 		});
 	}
 	
-	self.addMultiDownloads = function() {
-		if (self.weeks === null) {
+	vm.addMultiDownloads = function() {
+		if (vm.weeks === null) {
 			getWeeks().then(function(result) {
 				multiDownloads();
 			});
@@ -186,32 +186,32 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 }]);
 
 app.controller('artistDetailsController', ['dataFactory', '$routeParams', function(dataFactory, $routeParams) {
-	var self = this;
+	var vm = this;
 	
-	self.artist = {};
-	self.mainImageLink = null;
+	vm.artist = {};
+	vm.mainImageLink = null;
 	
 	function getArtist(id) {
 		dataFactory.getArtist(id)
 			.then(function(response) {
-				self.artist = response.data
+				vm.artist = response.data
 			});
 	}
 	
 	function getMainImage(id) {
 		dataFactory.getMainImageLink('artist', id)
 			.then(function(response) {
-				self.mainImageLink = response.data;
+				vm.mainImageLink = response.data;
 			});
 	}
 	
-	self.updateMainPic = function() {
+	vm.updateMainPic = function() {
 		dataFactory.saveMainImageLink('artist', $routeParams.artistId)
 			.then(function(response) {
-				self.message = response.data;
+				vm.message = response.data;
 				getMainImage($routeParams.artistId);
 			}, function(response) {
-				self.message = response.statusText;
+				vm.message = response.statusText;
 			});
 	}
 	

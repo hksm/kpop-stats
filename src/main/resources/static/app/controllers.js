@@ -1,47 +1,26 @@
-app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focus', 
-                                    function(dataFactory, fileUpload, $scope, focus) {
+app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', '$uibModal',
+                                    function(dataFactory, fileUpload, $scope, $uibModal) {
 	var vm = this;
 	
-	var getArtists = function() {
-		dataFactory.getArtists()
+	vm.totalItems = 0;
+	vm.pageNumber = 0;
+	
+	var getArtists = function(page) {
+		dataFactory.getArtists(page)
 			.then(function(response) {
-				vm.artistList = response.data;
+				vm.artistList = response.data.content;
+				vm.totalItems = response.data.totalElements;
+				vm.pageNumber = response.data.number+1;
 			}, function(response) {
 				vm.message = response.statusText;
 			});
 	};
 	
-	var clearForm = function() {
-		vm.artist = {};
+	vm.pageChanged = function() {
+		getArtists(vm.pageNumber-1);
 	};
 	
-	var loadArtist = function(id) {
-		dataFactory.getArtist(id)
-			.then(function(response) {
-				vm.artist = response.data;
-			});
-	};
-	
-	vm.addArtist = function() {
-		vm.isProcessing = true;
-		dataFactory.saveArtist(vm.artist)
-			.then(function(response) {
-				vm.message = response.data;
-				getArtists();
-				clearForm();
-				vm.isProcessing = false;
-			}, function(response) {
-				vm.message = response.statusText;
-				vm.isProcessing = false;
-			});
-	};
-	
-	vm.editArtist = function(id) {
-		loadArtist(id);
-		focus('focusMe');
-	}
-	
-	vm.deleteArtist = function(id) {
+	vm.remove = function(id) {
 		dataFactory.deleteArtist(id)
 			.then(function(response) {
 				vm.message = response.data;
@@ -49,6 +28,17 @@ app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focu
 			}, function(response) {
 				vm.message = response.statusText;
 			});
+	}
+	
+	vm.openModal = function(artist) {
+		var modalInstance = $uibModal.open({
+			templateUrl: 'artist-modal.html',
+			controller: 'artistModalController',
+			controllerAs: 'vm',
+			resolve: {
+				resolved: artist || undefined
+			}
+		});
 	}
 	
 	vm.uploadArtistPic = function(file) {
@@ -64,7 +54,43 @@ app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', 'focu
 	getArtists();
 }]);
 
-app.controller('trackController', ['dataFactory', function(dataFactory) {
+app.controller('artistModalController', ['dataFactory', 'focus', '$uibModal', '$uibModalInstance', 'toastr', 'resolved',
+                                         function(dataFactory, focus, $uibModal, $uibModalInstance, toastr, resolved) {
+	var vm = this;
+	
+	vm.artist = resolved || {};
+	
+	var clearForm = function() {
+		vm.artist = {};
+	};
+	
+	var loadArtist = function(id) {
+		dataFactory.getArtist(id)
+			.then(function(response) {
+				vm.artist = response.data;
+			});
+	};
+	
+	vm.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+	
+	vm.save = function() {
+		vm.isProcessing = true;
+		dataFactory.saveArtist(vm.artist)
+			.then(function(response) {
+				toastr.success(response.data);
+				vm.isProcessing = false;
+				vm.cancel();
+			}, function(response) {
+				toastr.error(response.statusText);
+				vm.isProcessing = false;
+			});
+	};
+}]);
+
+app.controller('trackController', ['dataFactory', '$uibModal', 
+                                   function(dataFactory, $uibModal) {
 	var vm = this;
 	
 	var getArtists = function() {
@@ -102,7 +128,8 @@ app.controller('trackController', ['dataFactory', function(dataFactory) {
 	getTracks();
 }]);
 
-app.controller('downloadController', ['dataFactory', '$q', function(dataFactory, $q) {
+app.controller('downloadController', ['dataFactory', '$q', '$uibModal', 
+                                      function(dataFactory, $q, $uibModal) {
 	var vm = this;
 	
 	vm.weeks = null;
@@ -185,7 +212,8 @@ app.controller('downloadController', ['dataFactory', '$q', function(dataFactory,
 	getDownloads();
 }]);
 
-app.controller('artistDetailsController', ['dataFactory', '$routeParams', function(dataFactory, $routeParams) {
+app.controller('artistDetailsController', ['dataFactory', '$routeParams', 
+                                           function(dataFactory, $routeParams) {
 	var vm = this;
 	
 	vm.artist = {};

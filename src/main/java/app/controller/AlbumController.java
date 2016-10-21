@@ -3,6 +3,8 @@ package app.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +22,8 @@ public class AlbumController {
 	private AlbumRepository dao;
 	
 	@RequestMapping(value="/albums", method=RequestMethod.GET)
-	public List<Album> listAll() {
-		return (List<Album>) dao.findAll();
+	public Page<Album> listAll(Pageable pageable) {
+		return (Page<Album>) dao.findAll(pageable);
 	}
 	
 	@RequestMapping(value="/albums", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)

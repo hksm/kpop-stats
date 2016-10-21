@@ -10,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import app.validator.ValidEmail;
 
 @Entity
@@ -23,7 +21,7 @@ public class User {
 	@NotNull @Column(unique=true)
 	private String username;
 	
-	@NotNull @JsonIgnore
+	@NotNull
 	private String password;
 	
 	@ValidEmail @NotNull @Column(unique=true)
@@ -35,8 +33,7 @@ public class User {
 	@NotNull
 	private boolean enabled;
 
-	public User() {
-		
+	public User() {		
 	}
 	
 	public User(User user) {

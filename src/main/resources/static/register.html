@@ -1,4 +1,4 @@
-<div class="alert alert-danger" ng-show="controller.error">
+<div class="alert alert-danger" ng-show="vm.error">
 	There was a problem registering. Please try again.
 </div>
 
@@ -8,22 +8,22 @@
 	</div>
 	
 	<div class="panel-body">
-		<form role="form" ng-submit="controller.register()" class="form-signin">
+		<form role="form" ng-submit="vm.register()" class="form-signin">
 			<div class="form-group">
 				<label for="username">Username:</label>
-				<input type="text" class="form-control" id="username" ng-model="controller.user.username">
+				<input type="text" class="form-control" id="username" ng-model="vm.user.username">
 			</div>
 			<div class="form-group">
 				<label for="password">Password:</label>
-				<input type="password" class="form-control" id="password" ng-model="controller.user.password">
+				<input type="password" class="form-control" id="password" ng-model="vm.user.password">
 			</div>
 			<div class="form-group">
 				<label for="matchingPassword">Confirm Password:</label>
-				<input type="password" class="form-control" id="matchingPassword" ng-model="controller.matchingPassword">
+				<input type="password" class="form-control" id="matchingPassword" ng-model="vm.matchingPassword">
 			</div>
 			<div class="form-group">
 				<label for="email">E-mail:</label>
-				<input type="email" class="form-control" id="email" ng-model="controller.user.email">
+				<input type="email" class="form-control" id="email" ng-model="vm.user.email">
 			</div>
 			<button type="submit" class="btn btn-primary btn-block">Register</button>
 		</form>

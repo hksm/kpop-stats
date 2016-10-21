@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -20,12 +21,21 @@ public class Track {
 	@NotNull
 	private String title;
 	
+	@ManyToOne
+	private Genre genre;
+	
 	public Track() {
 	}
-
+	
 	public Track(Set<Artist> artists, String title) {
 		this.artists = artists;
 		this.title = title;
+	}
+
+	public Track(Set<Artist> artists, String title, Genre genre) {
+		this.artists = artists;
+		this.title = title;
+		this.genre = genre;
 	}
 
 	public Long getId() {
@@ -50,5 +60,13 @@ public class Track {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public Genre getGenre() {
+		return genre;
+	}
+
+	public void setGenre(Genre genre) {
+		this.genre = genre;
 	}
 }

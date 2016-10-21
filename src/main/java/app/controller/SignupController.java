@@ -32,11 +32,15 @@ public class SignupController {
 	public String signup(@RequestBody User user) {
 		try {
 			Set<Role> roles = new HashSet<>();
-			roles.add(roleRepository.findByRole("ROLE_USER"));
+			Role role = roleRepository.findByRole("ROLE_USER");
+			if (role == null) {
+				role = roleRepository.save(new Role("ROLE_USER"));
+			}
+			roles.add(role);
 			user.setRoles(roles);
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			user.setEnabled(true);
-			userRepository.save(user);		
+			userRepository.save(user);
 		} catch(Exception e) {
 			e.printStackTrace();
 			return "Error: " + e.toString();

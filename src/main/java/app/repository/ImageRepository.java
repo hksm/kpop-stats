@@ -4,13 +4,13 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
 import app.model.Category;
 import app.model.Image;
 
 @Transactional
-public interface ImageRepository extends CrudRepository<Image, Long> {
+public interface ImageRepository extends PagingAndSortingRepository<Image, Long> {
 
 	public List<Image> findAllByCategoryAndEspecificId(Category category, Long especificId);
 	

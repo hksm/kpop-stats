@@ -1,43 +1,26 @@
-<div class="alert alert-warning" ng-show="vm.message">
-	{{ vm.message }}
-</div>
-
-<div class="panel panel-default">
-	<div class="panel-heading">
-		<h3 class="panel-title"><strong>{{ (vm.artist.id ? 'Edit' : 'New') }} Artist</strong></h3>
+<div class="row">
+	<div class="col-md-1" style="height:100%">
+		<button type="button" class="btn btn-info btn-lg btn-add" ng-click="vm.openModal()">+ Add</button>
 	</div>
-	<div class="panel-body">
-		<form class="form-horizontal" ng-submit="vm.addArtist()">
-			<div class="form-group">
-				<label for="name" class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="name" placeholder="" ng-model="vm.artist.name" focus-on="focusMe">
+	<div class="col-md-11">
+		<div class="well">
+			<form class="form-inline">
+				<div class="form-group">
+					<label class="sr-only" for="exampleInputEmail3">Campo1</label>
+				    <input type="email" class="form-control" id="exampleInputEmail3" placeholder="Email">
 				</div>
-			</div>
-			
-			<div class="form-group">
-				<label for="alias" class="col-sm-2 control-label">Alias</label>
-				<div class="col-sm-10">
-					<input type="text" class="form-control" id="alias" placeholder="" ng-model="vm.artist.alias">
+				<div class="form-group">
+				    <label class="sr-only" for="exampleInputPassword3">Campo2</label>
+					<input type="password" class="form-control" id="exampleInputPassword3" placeholder="Password">
 				</div>
-			</div>
-			
-			<div class="form-group" ng-if="vm.artist.id > 0">
-				<label for="picture" class="col-sm-2 control-label">Picture</label>
-				<div class="col-sm-10">
-					<file-field class="btn btn-default" ng-class="{'btn-success':vm.artistPicture}" ng-model="vm.artistPicture" preview="previewImage">Teste</file-field>
-					{{ vm.artistPicture.name }}
+				<div class="checkbox">
+					<label>
+						<input type="checkbox"> Campo3
+					</label>
 				</div>
-			</div>
-			
-			<div class="form-group">
-				<div class="col-sm-offset-2 col-sm-10">
-					<button type="submit" class="btn btn-primary" ng-disabled="vm.isProcessing">Submit</button>
-					<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadArtistPic(vm.artistPicture)">Upload</button>
-					<button type="button" class="btn btn-default" ng-disabled="vm.isProcessing" ng-click="vm.uploadPicFromLastfm()">Get Pic from last.fm</button>
-				</div>
-			</div>
-		</form>
+				<button type="submit" class="btn btn-default pull-right">Pesquisar</button>
+			</form>
+		</div>	
 	</div>
 </div>
 
@@ -56,9 +39,13 @@
 			<td><a href="#/artist/{{ artist.id }}">{{ artist.name }}</a></td>
 			<td>{{ artist.alias }}</td>
 			<td class="icons">
-				<span class="glyphicon glyphicon-edit" ng-click="vm.editArtist(artist.id)"></span>
-				<span class="glyphicon glyphicon-trash" ng-click="vm.deleteArtist(artist.id)"></span>
+				<span class="glyphicon glyphicon-edit" ng-click="vm.openModal(artist)"></span>
+				<span class="glyphicon glyphicon-trash" ng-click="vm.remove(artist.id)"></span>
 			</td>
 		</tr>
 	</tbody>
 </table>
+
+<div class="text-center">
+	<ul uib-pagination total-items="vm.totalItems" ng-model="vm.pageNumber" ng-change="vm.pageChanged()" max-size="7" boundary-links="true" items-per-page="20"></ul>
+</div>

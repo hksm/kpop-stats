@@ -15,6 +15,8 @@ public class Artist {
 	private String name;
 	
 	private String alias;
+	
+	private Integer debutYear;
 
 	public Artist() {
 	}
@@ -26,6 +28,12 @@ public class Artist {
 	public Artist(String name, String alias) {
 		this.name = name;
 		this.alias = alias;
+	}
+	
+	public Artist(String name, String alias, Integer debutYear) {
+		this.name = name;
+		this.alias = alias;
+		this.debutYear = debutYear;
 	}
 
 	public Long getId() {
@@ -50,6 +58,14 @@ public class Artist {
 
 	public void setAlias(String alias) {
 		this.alias = alias;
+	}
+	
+	public Integer getDebutYear() {
+		return debutYear;
+	}
+	
+	public void setDebutYear(Integer debutYear) {
+		this.debutYear = debutYear;
 	}
 
 	@Override

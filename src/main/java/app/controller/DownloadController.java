@@ -10,6 +10,8 @@ import org.joda.time.DateTime;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -48,8 +50,8 @@ public class DownloadController {
 	private GaonService gaonService;
 	
 	@RequestMapping(value="/downloads", method=RequestMethod.GET)
-	public List<Download> listAll() {
-		return (List<Download>) downloadRepository.findAll();
+	public Page<Download> listAll(Pageable pageable) {
+		return (Page<Download>) downloadRepository.findAll(pageable);
 	}
 	
 	@SuppressWarnings("unchecked")

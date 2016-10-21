@@ -1,8 +1,8 @@
 app.factory('dataFactory', ['$http', function($http) {
 	var dataFactory = {};
 	
-	dataFactory.getArtists = function() {
-		return $http.get('/artists');
+	dataFactory.getArtists = function(page) {
+		return $http.get('/artists?page=' + (page || 0) + '&size=20');
 	};
 	
 	dataFactory.getArtist = function(id) {

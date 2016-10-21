@@ -72,3 +72,8 @@ oi-select .select-search {
 	margin-right: 10px;
 	margin-left: 10px;
 }
+
+.btn-add {
+	margin-top: 12px;
+	padding: 13px 16px;
+}

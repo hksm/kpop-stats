@@ -50,9 +50,7 @@ app.config(function($routeProvider, $httpProvider, laddaProvider) {
 
 app.controller('home', function($http) {
 	var vm = this;
-	$http.get('/resource').then(function(response) {
-		vm.greeting = response.data;
-	});
+	
 });
 
 app.controller('navigation', function($rootScope, $http, $location) {

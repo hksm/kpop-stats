@@ -3,6 +3,8 @@ package app.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +22,8 @@ public class TrackController {
 	private TrackRepository dao;
 	
 	@RequestMapping(value="/tracks", method=RequestMethod.GET)
-	public List<Track> listAll() {
-		return (List<Track>) dao.findAll();
+	public Page<Track> listAll(Pageable pageable) {
+		return (Page<Track>) dao.findAll(pageable);
 	}
 	
 	@RequestMapping(value="/tracks", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)

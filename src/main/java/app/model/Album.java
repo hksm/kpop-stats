@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -29,6 +30,9 @@ public class Album {
 	@NotNull
 	private String distributorCompany;
 
+	@ManyToOne
+	private Week firstChartingWeek;
+	
 	public Album() {
 	}
 	
@@ -87,5 +91,13 @@ public class Album {
 
 	public void setDistributorCompany(String distributorCompany) {
 		this.distributorCompany = distributorCompany;
+	}
+	
+	public Week getFirstChartingWeek() {
+		return firstChartingWeek;
+	}
+	
+	public void setFirstChartingWeek(Week firstChartingWeek) {
+		this.firstChartingWeek = firstChartingWeek;
 	}
 }

@@ -24,28 +24,26 @@
 	</div>
 </div>
 
-<table class="table table-striped" ng-if="vm.trackList">
+<table class="table table-striped" ng-if="vm.genreList">
 	<thead>
 		<tr>
 			<th>ID</th>
-			<th>Title</th>
-			<th>Artists</th>
+			<th>Name</th>
 			<th></th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="track in vm.trackList">
-			<td>{{ track.id }}</td>
-			<td>{{ track.title }}</td>
-			<td><span ng-repeat="artist in track.artists">{{ artist.name }}</span></td>
+		<tr ng-repeat="genre in vm.genreList">
+			<td>{{ genre.id }}</td>
+			<td>{{ genre.name }}</td>
 			<td class="icons">
-				<span class="glyphicon glyphicon-edit" ng-click="vm.openModal(track)"></span>
-				<span class="glyphicon glyphicon-trash" ng-click="vm.remove(track.id)"></span>
+				<span class="glyphicon glyphicon-edit" ng-click="vm.openModal(genre)"></span>
+				<span class="glyphicon glyphicon-trash" ng-click="vm.remove(genre.id)"></span>
 			</td>
 		</tr>
 	</tbody>
 </table>
 
-<div class="text-center" ng-if="vm.totalItems && vm.totalItems > 0">
+<div class="text-center">
 	<ul uib-pagination total-items="vm.totalItems" ng-model="vm.pageNumber" ng-change="vm.pageChanged()" max-size="7" boundary-links="true" items-per-page="20"></ul>
 </div>

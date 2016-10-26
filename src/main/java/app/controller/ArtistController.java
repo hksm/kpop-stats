@@ -1,5 +1,7 @@
 package app.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import app.model.Artist;
@@ -27,6 +30,11 @@ public class ArtistController {
 	@RequestMapping(value="/artists/{id}", method=RequestMethod.GET)
 	public Artist getArtistById(@PathVariable Long id) {
 		return dao.findOne(id);
+	}
+	
+	@RequestMapping(value="/artists/findby", method=RequestMethod.GET)
+	public List<Artist> findBy(@RequestParam("q") String query) {
+		return dao.findByQueryIgnoreCase(query);
 	}
 	
 	@RequestMapping(value="/artists", method=RequestMethod.POST, produces=MediaType.TEXT_PLAIN_VALUE)

@@ -2,11 +2,15 @@ app.factory('dataFactory', ['$http', function($http) {
 	var dataFactory = {};
 	
 	dataFactory.getArtists = function(page) {
-		return $http.get('/artists?page=' + (page || 0) + '&size=20');
+		return $http.get('/artists' + (page ? ('?page=' + page + '&size=20') : ''));
 	};
 	
 	dataFactory.getArtist = function(id) {
 		return $http.get('/artists/' + id);
+	};
+
+	dataFactory.findByArtist = function(query) {
+		return $http.get('/artists/findby?q=' + query);
 	};
 	
 	dataFactory.saveArtist = function(artist) {
@@ -17,12 +21,24 @@ app.factory('dataFactory', ['$http', function($http) {
 		return $http.delete('/artists/' + id);
 	};
 	
-	dataFactory.getTracks = function() {
-		return $http.get('/tracks');
+	dataFactory.getTracks = function(page) {
+		return $http.get('/tracks' + (page ? ('?page=' + page + '&size=20') : ''));
 	};
 	
 	dataFactory.saveTrack = function(track) {
 		return $http.post('/tracks', track);
+	};
+
+	dataFactory.getGenres = function(page) {
+		return $http.get('/genres' + (page ? ('?page=' + page + '&size=20') : ''));
+	};
+	
+	dataFactory.saveGenre = function(genre) {
+		return $http.post('/genres', genre);
+	};
+	
+	dataFactory.deleteGenre = function(id) {
+		return $http.delete('/genres/' + id);
 	};
 	
 	dataFactory.getMissingWeeks = function() {

@@ -1,7 +1,7 @@
-var app = angular.module('kpop-stats', ['ngRoute', 'ngAnimate', 'oi.select', 'ui.bootstrap', 
+var app = angular.module('kpop-stats', ['ngRoute', 'ngAnimate', 'ngSanitize', 'ui.select', 'ui.bootstrap', 
                                         'bootstrap.fileField', 'toastr', 'angular-ladda']);
 
-app.config(function($routeProvider, $httpProvider, laddaProvider) {
+app.config(function($routeProvider, $httpProvider, laddaProvider, uiSelectConfig) {
 	$routeProvider
 		.when('/', {
 			templateUrl: 'home.html',
@@ -28,6 +28,11 @@ app.config(function($routeProvider, $httpProvider, laddaProvider) {
 			controller: 'trackController',
 			controllerAs: 'vm'
 		})
+		.when('/genre', {
+			templateUrl: 'genre.html',
+			controller: 'genreController',
+			controllerAs: 'vm'
+		})
 		.when('/download', {
 			templateUrl: 'download.html',
 			controller: 'downloadController',
@@ -46,6 +51,8 @@ app.config(function($routeProvider, $httpProvider, laddaProvider) {
 		spinnerSize: 25,
 		spinnerColor: '#000000'
 	});
+
+	uiSelectConfig.theme = 'bootstrap';
 });
 
 app.controller('home', function($http) {

@@ -6,7 +6,7 @@ app.controller('artistController', ['dataFactory', 'fileUpload', '$scope', '$uib
 	vm.pageNumber = 0;
 	
 	var getArtists = function(page) {
-		dataFactory.getArtists(page)
+		dataFactory.getArtists(page || 0)
 			.then(function(response) {
 				vm.artistList = response.data.content;
 				vm.totalItems = response.data.totalElements;
@@ -64,13 +64,6 @@ app.controller('artistModalController', ['dataFactory', 'focus', '$uibModal', '$
 		vm.artist = {};
 	};
 	
-	var loadArtist = function(id) {
-		dataFactory.getArtist(id)
-			.then(function(response) {
-				vm.artist = response.data;
-			});
-	};
-	
 	vm.cancel = function() {
 		$uibModalInstance.dismiss('cancel');
 	};
@@ -93,39 +86,160 @@ app.controller('trackController', ['dataFactory', '$uibModal',
                                    function(dataFactory, $uibModal) {
 	var vm = this;
 	
-	var getArtists = function() {
-		dataFactory.getArtists()
-			.then(function(response) {
-				vm.artistList = response.data;
-			}, function(response) {
-				vm.message = response.statusText;
-			});
-	};
-	
-	var getTracks = function() {
+	vm.totalItems = 0;
+	vm.pageNumber = 0;
+
+	var getTracks = function(page) {
 		dataFactory.getTracks()
 			.then(function(response) {
-				vm.trackList = response.data;
+				vm.trackList = response.data.content;
+				vm.totalItems = response.data.totalElements;
+				vm.pageNumber = response.data.number+1;
 			}, function(response) {
 				vm.message = response.statusText;
 			});
 	};
 	
-	vm.addTrack = function() {
+	vm.pageChanged = function() {
+		getTracks(vm.pageNumber-1);
+	};
+
+	vm.openModal = function(track) {
+		var modalInstance = $uibModal.open({
+			templateUrl: 'track-modal.html',
+			controller: 'trackModalController',
+			controllerAs: 'vm',
+			resolve: {
+				resolved: track || undefined
+			}
+		});
+	}
+
+	getTracks();
+}]);
+
+app.controller('trackModalController', ['dataFactory', 'focus', '$uibModal', '$uibModalInstance', 'toastr', 'resolved',
+                                         function(dataFactory, focus, $uibModal, $uibModalInstance, toastr, resolved) {
+	var vm = this;
+	
+	vm.track = resolved || {};
+	vm.artistList = [];
+	
+	var clearForm = function() {
+		vm.track = {};
+	};
+
+	vm.findByArtist = function(query) {
+		return dataFactory.findByArtist(query)
+			.then(function(response) {
+				vm.artistList = response.data;
+			});
+	};
+
+	vm.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+	
+	vm.save = function() {
 		vm.isProcessing = true;
-		return dataFactory.saveTrack(vm.track)
+		dataFactory.saveTrack(vm.track)
+			.then(function(response) {
+				toastr.success(response.data);
+				vm.isProcessing = false;
+				vm.cancel();
+			}, function(response) {
+				toastr.error(response.statusText);
+				vm.isProcessing = false;
+			});
+	};
+
+	vm.searchRes = [];
+
+	vm.searchMedia = function($select) {
+	  return $http.get('http://maps.googleapis.com/maps/api/geocode/json', {
+	    params: {
+	      address: $select.search,
+	      sensor: false
+	    }
+	  }).then(function(response){
+	    $scope.searchRes = response.data.results;
+	  });
+	}
+
+}]);
+
+app.controller('genreController', ['dataFactory', '$uibModal',
+                                    function(dataFactory, $uibModal) {
+	var vm = this;
+	
+	vm.totalItems = 0;
+	vm.pageNumber = 0;
+	
+	var getGenres = function(page) {
+		dataFactory.getGenres(page || 0)
+			.then(function(response) {
+				vm.genreList = response.data.content;
+				vm.totalItems = response.data.totalElements;
+				vm.pageNumber = response.data.number+1;
+			}, function(response) {
+				vm.message = response.statusText;
+			});
+	};
+	
+	vm.pageChanged = function() {
+		getGenres(vm.pageNumber-1);
+	};
+	
+	vm.remove = function(id) {
+		dataFactory.deleteGenre(id)
 			.then(function(response) {
 				vm.message = response.data;
-				getTracks();
-				vm.isProcessing = false;
+				getGenres();
 			}, function(response) {
 				vm.message = response.statusText;
+			});
+	}
+	
+	vm.openModal = function(genre) {
+		var modalInstance = $uibModal.open({
+			templateUrl: 'genre-modal.html',
+			controller: 'genreModalController',
+			controllerAs: 'vm',
+			resolve: {
+				resolved: genre || undefined
+			}
+		});
+	}
+	
+	getGenres();
+}]);
+
+app.controller('genreModalController', ['dataFactory', 'focus', '$uibModal', '$uibModalInstance', 'toastr', 'resolved',
+                                         function(dataFactory, focus, $uibModal, $uibModalInstance, toastr, resolved) {
+	var vm = this;
+	
+	vm.genre = resolved || {};
+	
+	var clearForm = function() {
+		vm.genre = {};
+	};
+	
+	vm.cancel = function() {
+		$uibModalInstance.dismiss('cancel');
+	};
+	
+	vm.save = function() {
+		vm.isProcessing = true;
+		dataFactory.saveGenre(vm.genre)
+			.then(function(response) {
+				toastr.success(response.data);
+				vm.isProcessing = false;
+				vm.cancel();
+			}, function(response) {
+				toastr.error(response.statusText);
 				vm.isProcessing = false;
 			});
 	};
-	
-	getArtists();
-	getTracks();
 }]);
 
 app.controller('downloadController', ['dataFactory', '$q', '$uibModal', 
@@ -133,7 +247,6 @@ app.controller('downloadController', ['dataFactory', '$q', '$uibModal',
 	var vm = this;
 	
 	vm.weeks = null;
-	
 	vm.bar = {
 			max: 0,
 			value: 0

@@ -12,7 +12,7 @@ app.directive('bsActiveLink', ['$location', function ($location) {
 	return {
 		restrict: 'A',
 		replace: false,
-		link: function (scope, elem) {
+		link: function(scope, elem) {
 			scope.$on("$routeChangeSuccess", function () {
 				var hrefs = ['/#' + $location.path(),
 				             '#' + $location.path(), //html5: false
@@ -29,3 +29,26 @@ app.directive('bsActiveLink', ['$location', function ($location) {
 	    }
 	}
 }]);
+
+app.directive('restrictNumber', function() {
+	return {
+		require: 'ngModel',
+		link: function(scope, element, attrs, modelCtrl) {
+			modelCtrl.$parsers.push(function (inputValue) {
+				var num = parseInt(inputValue, 10);
+				var transf;
+				if (!num) {
+					trans = '';
+				} else if (num < 1900) {
+					trans = 1900;	
+				} else if (num > 2999) {
+					trans = 2999;	
+				}
+				modelCtrl.$setViewValue(transf);
+           		modelCtrl.$render();
+           		return transf;
+				    
+			});
+		}
+	};
+});

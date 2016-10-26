@@ -3,7 +3,7 @@
 		<button type="button" class="btn btn-info btn-lg btn-add" ng-click="vm.openModal()">+ Add</button>
 	</div>
 	<div class="col-md-11">
-		<div class="well">
+		<div class="well well-sm">
 			<form class="form-inline">
 				<div class="form-group">
 					<label class="sr-only" for="exampleInputEmail3">Campo1</label>
@@ -46,6 +46,6 @@
 	</tbody>
 </table>
 
-<div class="text-center">
+<div class="text-center" ng-if="vm.totalItems && vm.totalItems > 0">
 	<ul uib-pagination total-items="vm.totalItems" ng-model="vm.pageNumber" ng-change="vm.pageChanged()" max-size="7" boundary-links="true" items-per-page="20"></ul>
 </div>

@@ -14,10 +14,6 @@ body {
 	margin-bottom: 19px;
 }
 
-oi-select .select-search {
-	border-color: #ccc;
-}
-
 .icons {
 	text-align: right;
 	max-width: 40px;
@@ -65,15 +61,29 @@ oi-select .select-search {
 	margin-bottom: 20px;
 	text-align: center;
 }
+
 .home-blocks h2 {
 	font-weight: normal;
 }
+
 .home-blocks .col-lg-4 p {
 	margin-right: 10px;
 	margin-left: 10px;
 }
 
 .btn-add {
-	margin-top: 12px;
-	padding: 13px 16px;
+	margin-top: 5px;
+    padding: 10px 16px;
+}
+
+.select2 > .select2-choice.ui-select-match {
+	height: 29px;
+}
+
+.selectize-control > .selectize-dropdown {
+	top: 36px;
+}
+
+.ui-select-multiple.ui-select-bootstrap .ui-select-match .close {
+	margin-top: 2px;
 }
